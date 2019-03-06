@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment} from 'react';
 import './App.css';
 import queryString from 'query-string';
 
@@ -6,63 +6,87 @@ let defaultStyle = {
   color: '#fff'
 };
 
-class PlaylistCounter extends Component {
-  render() {
-    return (
-      <div style={{...defaultStyle, width: "40%", display: 'inline-block'}}>
-        <h2>{this.props.playlists.length} playlists</h2>
-      </div>
-    );
+let artist = '';
+var artistData ='';
+
+
+class ArtistSearch extends Component {
+  constructor(props) {
+    super(props);
+    this.state={
+      inputValue:"hello!",
+      list:[]
+    }
   }
+handleInputChange(e){
+    this.setState({
+    })
+    this.state.inputValue = e.target.value;
 }
 
-class HoursCounter extends Component {
-  render() {
-    let allSongs = this.props.playlists.reduce((songs, eachPlaylist) => {
-      return songs.concat(eachPlaylist.songs)
-    }, [])
-    let totalDuration = allSongs.reduce((sum, eachSong) => {
-      return sum + eachSong.duration
-    }, 0)
-    return (
-      <div style={{...defaultStyle, width: "40%", display: 'inline-block'}}>
-        <h2>{Math.round(totalDuration/60)} hours</h2>
-      </div>
-    );
-  }
+
+handleBtnClick(){
+    artist = this.state.inputValue.toString();
+    let parsed = queryString.parse(window.location.search);
+    let accessToken = parsed.access_token;
+  if (!accessToken)
+    return;
+   fetch('https://api.spotify.com/v1/search?q='+artist+'&type=artist', {
+    type: 'GET',
+    contentType: 'application/json; charset=utf-8',
+    headers: {'Authorization': 'Bearer ' + accessToken}
+  }).then(response => response.json())
+  .then(data => this.setState({list:[...data.artists.items]}))
 }
 
-class Filter extends Component {
-  render() {
+render() {
+  // this.state.user && 
+  // this.state.playlists 
+  //   ? this.state.playlists.filter(playlist => 
+  //     playlist.name.toLowerCase().includes(
+  //       this.state.filterString.toLowerCase())) 
+  //   : []
+
+
+      // var renderedOutput = (this.state.list[0] &&
+      //                      this.state.list[0].images) ?
+      //                      this.state.list.map(item => 
+      //                       <div><img src = {item.images[1].url} /> <h1>{item.name}</h1></div>)
+      //                       :[]
+     var renderedOutput = this.state.list.map(item => 
+                            <div>
+                              {(item &&
+                               item.images[1]) ?
+                               <div><img src = {item.images[1].url} /> <h1>{item.name}</h1></div>
+                               :[]}
+                            </div>)
+                
+   
     return (
-      <div style={defaultStyle}>
-        <img/>
-        <input type="text" onKeyUp={event => 
-          this.props.onTextChange(event.target.value)}/>
-      </div>
-    );
+      <Fragment>
+      <div>
+          <input 
+              value = {this.state.inputValue}
+              onChange= {this.handleInputChange.bind(this)}
+          />
+          <button onClick={this.handleBtnClick.bind(this)}>submit</button></div>
+      {/* <ul>
+           
+          {console.log(this.state.list[1])}
+      </ul> */}
+      {(this.state.list[0] && this.state.list[0].images)? <div> {renderedOutput} </div> :[] }
+      </Fragment>
+    )
   }
+
 }
 
-class Playlist extends Component {
-  render() {
-    let playlist = this.props.playlist
-    return (
-      <div style={{...defaultStyle, display: 'inline-block', width: "25%"}}>
-        <img />
-        <h3>{playlist.name}</h3>
-        <ul>
-          {playlist.songs.map(song => 
-            <li>{song.name}</li>
-          )}
-        </ul>
-      </div>
-    );
-  }
-}
+
+
 
 class App extends Component {
   constructor() {
+    
     super();
     this.state = {
       serverData: {},
@@ -70,6 +94,7 @@ class App extends Component {
     }
   }
   componentDidMount() {
+    
     let parsed = queryString.parse(window.location.search);
     let accessToken = parsed.access_token;
     if (!accessToken)
@@ -81,20 +106,6 @@ class App extends Component {
       user: {
         name: data.display_name
       }
-    }))
-
-    fetch('https://api.spotify.com/v1/me/playlists', {
-      headers: {'Authorization': 'Bearer ' + accessToken}
-    }).then(response => response.json())
-    .then(data => this.setState({
-      playlists: data.items.map(item => {
-        console.log(data.items)
-        return {
-          name: item.name,
-          imageUrl: item.images[0].url, 
-          songs: []
-        }
-    })
     }))
 
   }
@@ -111,26 +122,22 @@ class App extends Component {
         {this.state.user ?
         <div>
           <h1 style={{...defaultStyle, 'font-size': '54px'}}>
-            {this.state.user.name}'s Playlists
+            I feel like searching for
           </h1>
-          <PlaylistCounter playlists={playlistToRender}/>
-          <HoursCounter playlists={playlistToRender}/>
-          <Filter onTextChange={text => {
-              this.setState({filterString: text})
-            }}/>
-          {playlistToRender.map(playlist => 
-            <Playlist playlist={playlist} />
-          )}
+          <ArtistSearch/>
         </div> : <button onClick={() => {
             window.location = window.location.href.includes('localhost') 
-              ? 'https://music-search-backend.herokuapp.com/login' 
+              ? 'http://localhost:8888/login' 
               : 'https://music-search-backend.herokuapp.com/login' }
           }
           style={{padding: '20px', 'font-size': '50px', 'margin-top': '20px'}}>Sign in with Spotify</button>
         }
       </div>
+      
     );
   }
+
 }
+
 
 export default App;
