@@ -3,7 +3,7 @@ import './App.css';
 import queryString from 'query-string';
 
 let defaultStyle = {
-  color: '#fff'
+  color: '#333333'
 };
 
 let artist = '';
@@ -14,10 +14,11 @@ class ArtistSearch extends Component {
   constructor(props) {
     super(props);
     this.state={
-      inputValue:"hello!",
+      inputValue:"",
       list:[]
     }
   }
+
 handleInputChange(e){
     this.setState({
     })
@@ -40,41 +41,22 @@ handleBtnClick(){
 }
 
 render() {
-  // this.state.user && 
-  // this.state.playlists 
-  //   ? this.state.playlists.filter(playlist => 
-  //     playlist.name.toLowerCase().includes(
-  //       this.state.filterString.toLowerCase())) 
-  //   : []
-
-
-      // var renderedOutput = (this.state.list[0] &&
-      //                      this.state.list[0].images) ?
-      //                      this.state.list.map(item => 
-      //                       <div><img src = {item.images[1].url} /> <h1>{item.name}</h1></div>)
-      //                       :[]
-     var renderedOutput = this.state.list.map(item => 
-                            <div>
-                              {(item &&
-                               item.images[1]) ?
-                               <div><img src = {item.images[1].url} /> <h1>{item.name}</h1></div>
-                               :[]}
-                            </div>)
-                
-   
+  var renderedOutput = this.state.list.map(item => 
+     <div>
+        {(item &&
+          item.images[1]) ?
+          <Fragment><img src = {item.images[1].url} /> <h1 className="artistName">{item.name}</h1></Fragment>
+        :[]}
+      </div>)         
     return (
       <Fragment>
-      <div>
-          <input 
+      <div className="inline">
+          <input
               value = {this.state.inputValue}
               onChange= {this.handleInputChange.bind(this)}
           />
-          <button onClick={this.handleBtnClick.bind(this)}>submit</button></div>
-      {/* <ul>
-           
-          {console.log(this.state.list[1])}
-      </ul> */}
-      {(this.state.list[0] && this.state.list[0].images)? <div> {renderedOutput} </div> :[] }
+          <button type="submit"onClick={this.handleBtnClick.bind(this)}>Search</button></div>
+      {(this.state.list[0] && this.state.list[0].images)? <div className="flexBox"> {renderedOutput} </div> :[] }
       </Fragment>
     )
   }
@@ -94,7 +76,6 @@ class App extends Component {
     }
   }
   componentDidMount() {
-    
     let parsed = queryString.parse(window.location.search);
     let accessToken = parsed.access_token;
     if (!accessToken)
@@ -107,7 +88,6 @@ class App extends Component {
         name: data.display_name
       }
     }))
-
   }
   render() {
     let playlistToRender = 
@@ -121,13 +101,13 @@ class App extends Component {
       <div className="App">
         {this.state.user ?
         <div>
-          <h1 style={{...defaultStyle, 'font-size': '54px'}}>
+          <h1>
             I feel like searching for
           </h1>
           <ArtistSearch/>
-        </div> : <button onClick={() => {
+         </div> : <button onClick={() => {
             window.location = window.location.href.includes('localhost') 
-              ? 'http://localhost:8888/login' 
+              ? 'https://music-search-backend.herokuapp.com/login' 
               : 'https://music-search-backend.herokuapp.com/login' }
           }
           style={{padding: '20px', 'font-size': '50px', 'margin-top': '20px'}}>Sign in with Spotify</button>
