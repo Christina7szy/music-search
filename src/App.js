@@ -1,6 +1,8 @@
 import React, { Component, Fragment} from 'react';
 import './App.css';
 import queryString from 'query-string';
+import ArtistInfo from './ArtistInfo';
+import ArtistDetail from './ArtistDetail';
 
 let defaultStyle = {
   color: '#333333'
@@ -9,13 +11,13 @@ let defaultStyle = {
 let artist = '';
 var artistData ='';
 
-
 class ArtistSearch extends Component {
   constructor(props) {
     super(props);
     this.state={
       inputValue:"",
-      list:[]
+      list:[],
+      clicked: false,
     }
   }
 
@@ -25,6 +27,12 @@ handleInputChange(e){
     this.state.inputValue = e.target.value;
 }
 
+handleImgClick(){
+  console.log("clicked");
+  this.setState({
+    clicked:true
+  })
+}
 
 handleBtnClick(){
     artist = this.state.inputValue.toString();
@@ -41,13 +49,7 @@ handleBtnClick(){
 }
 
 render() {
-  var renderedOutput = this.state.list.map(item => 
-     <div>
-        {(item &&
-          item.images[1]) ?
-          <Fragment><img src = {item.images[1].url} /> <h1 className="artistName">{item.name}</h1></Fragment>
-        :[]}
-      </div>)         
+  console.log(this.state);        
     return (
       <Fragment>
       <div className="inline">
@@ -55,12 +57,21 @@ render() {
               value = {this.state.inputValue}
               onChange= {this.handleInputChange.bind(this)}
           />
-          <button type="submit"onClick={this.handleBtnClick.bind(this)}>Search</button></div>
-      {(this.state.list[0] && this.state.list[0].images)? <div className="flexBox"> {renderedOutput} </div> :[] }
+          <button className="searchBtn" type="submit"onClick={this.handleBtnClick.bind(this)}>Search</button></div>
+      {(this.state.list[0] && this.state.list[0].images)? 
+      <div className="flexBox">{
+        this.state.list.map(item => {
+          return(
+          <div >
+            <ArtistInfo content = {item}/>
+          </div> ) 
+       })}
+       </div> :[]}
       </Fragment>
-    )
-  }
+      
+  )
 
+}
 }
 
 
@@ -105,12 +116,13 @@ class App extends Component {
             I feel like searching for
           </h1>
           <ArtistSearch/>
+          {/* <ArtistInfo/> */}
          </div> : <button onClick={() => {
             window.location = window.location.href.includes('localhost') 
               ? 'https://music-search-backend.herokuapp.com/login' 
               : 'https://music-search-backend.herokuapp.com/login' }
           }
-          style={{padding: '20px', 'font-size': '50px', 'margin-top': '20px'}}>Sign in with Spotify</button>
+          className="signinBtn">Sign in with Spotify</button>
         }
       </div>
       

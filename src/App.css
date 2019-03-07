@@ -13,6 +13,18 @@ h1{
   color: white;
   display: inline-block;
   padding: 5px;
+  margin-top:5px;
+  text-align:center;
+}
+h2{
+  font-family: 'Montserrat', sans-serif;
+  font-weight: bold;
+  font-size: 16px;
+  color: rgb(254,231,59);
+  padding: 5px;
+  background-color:white;
+  margin:5px;
+  text-align:center;
 }
 input{
   background-color: transparent;
@@ -35,7 +47,7 @@ input:focus, textarea:focus {
   display:inline-block;
 }
 
-button{
+.searchBtn{
   display: inline-block;
   border-radius: 4px;
   background-color: white;
@@ -47,19 +59,18 @@ button{
   font-size: 16px;
   padding: 10px;
   height:40px;
-  /* width: 150px; */
   transition: all 0.5s;
   cursor: pointer;
   margin-left: 20px;
   z-index:1;
 }
-.button span {
+.searchBtnspan {
   cursor: pointer;
   display: inline-block;
   position: relative;
   transition: 0.5s;
 }
-.button span:after {
+.searchBtn span:after {
 content: '\00bb';  /* CSS Entities. To use HTML Entities, use &#8594;*/
 position: absolute;
   opacity: 0;
@@ -67,10 +78,10 @@ position: absolute;
   right: -20px;
   transition: 0.5s;
 }
-.button:hover span {
+.searchBtn:hover span {
   padding-right: 25px;
 }
-.button:hover span:after {
+.searchBtn:hover span:after {
   opacity: 1;
   right: 0;
 }
@@ -93,6 +104,29 @@ img{
   /* overflow: hidden;
   text-overflow: ellipsis; */
  
+}
+@-webkit-keyframes example {
+  0%   {background-color:yellow; left:0px; top:0px;}
+  /* 25%  {background-color:yellow; left:200px; top:0px;}
+  50%  {background-color:blue; left:200px; top:200px;}
+  75%  {background-color:green; left:0px; top:200px;} */
+  100% {background-color:yellow; left:0px; top:50px;}
+}
+.signinBtn{
+  display: inline-block;
+  border-radius:0px;
+  background-color: transparent;
+  margin-top:45vh;
+  margin-left:32vw;
+  margin-right:32vw;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: bold;
+  color:white;
+  border: none;
+  font-size:40px;
+}
+.signinBtn:hover{
+  box-shadow: inset 0px -25px 0px 0px rgba(254,231,59,80);
 }
 .flexBox{
 
